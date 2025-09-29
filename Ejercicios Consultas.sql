@@ -96,9 +96,9 @@ FROM Empleado E
 RIGHT JOIN Departamento D ON E.idDepartamentoFK = D.idDepartamento;
 
 #Punto 1: Consultar empleados cuyo salario sea mayor al salario promedio de la empresa
-SELECT salarioEmpleado
+SELECT nombreEmpleado, salarioEmpleado
 FROM Empleado
-WHERE salarioEmpleado > AVG(salarioEmpleado);
+WHERE salarioEmpleado > (SELECT AVG(salarioEmpleado) FROM Empleado);
 
 #Punto 2: Encuentre el nombre del empleado con el segundo salario más alto
 SELECT nombreEmpleado, salarioEmpleado
