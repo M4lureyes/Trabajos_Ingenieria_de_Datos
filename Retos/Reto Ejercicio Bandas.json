@@ -1,0 +1,58 @@
+use disquera
+db.nombrecollection.aggregate([{$match:{estado: "activo"}}, {$project:{nombre: 1, precio: 1, descuento: 1}}, {$group: {_id: "$categoria", totalVentas: {$sum: "$precio"}, count: {$sum: 1}}}, $sort: totalVentas: -1])
+
+//Ejemplo documento
+{
+	"_id": {
+		"$oid": "690b49ed112b337a042f769c"
+	}
+	{
+		name: "la banda y",
+		country: "Colombia",
+		albums: [
+			{title: "hhhh", year: 2025, ratings: 5, sales:150000},
+			{title: "hhhh", year: 2025, ratings: 5, sales:150000}
+		],
+		members:["A", "B", "C"]
+	}
+}
+
+//Reto 1: Crear la colección bands e insertar 3 registros
+db.createCollection({"bands"})
+db.bands.insertMany([
+	{name: "Coldplay", country: "Reino Unido", almbus: [{title: "Parachutes", year: 2000, ratings: 2, sales: 5000}}, {title: "A Rush of Blood to the Head", year: 2002, ratings: 4, sales: 10000}]},
+	{name: "Imagine Dragons", country: "Estados Unidos", almbus: [{title: "Night Visions", year: 2012, ratings: 3, sales: 8000}}, {title: "Evolve", year: 2017, ratings: 3, sales: 8000}]},
+	{name: "Linkin Park", country: "Estados Unidos", almbus: [{title: "Hybrid Theory", year: 2000, ratings: 5, sales: 24000}}, {title: "Meteora", year: 2003, ratings: 2, sales: 25000}]}
+])
+
+//Reto 2: Contar cuántos almbubms tiene cada banda
+db.bands.aggregate([
+	{$unwind: "$album"},
+	{$group:{
+			_id: "$name",
+			albumCount: {$sum: 1},
+			totalSales: {$sum: "$album.sales"}
+		}
+	},
+	{$sort:	{albumCount: -1}}
+])
+
+//Reto 3: Top 2 de los albums más vendidos
+db.bands.aggregate([
+	{$unwind: "$album"},
+	{$project:{
+		_id: "$name",
+		salesCount: {count: {$sum: 1}}
+		}
+	},
+	{$sort: {salesCount: -1}},
+	{$limit: 2}
+])
+
+//Reto 4: Obtner el rating por país
+db.bands.aggregate([
+	{$unwind: "$albums"},
+	{$group:{
+			}
+		}	
+])
